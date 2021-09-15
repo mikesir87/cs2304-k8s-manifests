@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: restarting-app
+  labels:
+    name: restarting-app
+spec:
+  containers:
+  - name: restarting-app
+    image: mikesir87/cs2304-k8s:restarting-app
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+    livenessProbe:
+      httpGet:
+        path: /fxi-the-spelling.html
+        port: 80
+      periodSeconds: 5
