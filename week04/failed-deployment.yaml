@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: failed-deployment
-    image: nignx:alpine
+    image: mkiesir87/cs2304-k8s:broken-image
     resources:
       limits:
         memory: "64Mi"
