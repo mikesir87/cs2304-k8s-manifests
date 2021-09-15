@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: failed-deployment
+  labels:
+    name: failed-deployment
+spec:
+  containers:
+  - name: failed-deployment
+    image: nignx:alpine
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
