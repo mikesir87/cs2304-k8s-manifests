@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-init-container
+spec:
+  selector:
+    matchLabels:
+      app: broken-init-container
+  template:
+    metadata:
+      labels:
+        app: broken-init-container
+    spec:
+      initContainers:
+        - name: startup-one
+          image: alpine
+          command: [ "sh", "-c", "--" ]
+          args:
+            - "echo -n 'hello there' > /config/data.txt"
+          volumeMounts:
+            - mountPath: /configg
+              name: config
+        - name: startup-two
+          image: alpine
+          command: 
+            - sh
+            - -c
+            - base64 /config/daat.txt > /config/output.txt
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      containers:
+        - name: webserver
+          image: nginx:alpine
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/config
+              name: config
+      volumes:
+        - name: config
+          emptyDir: {}
