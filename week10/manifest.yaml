@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cs2304-rbac
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cs2304-rbac
+  namespace: cs2304-rbac
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs2304-rbac
+  namespace: cs2304-rbac
+spec:
+  selector:
+    matchLabels:
+      app: cs2304-rbac
+  template:
+    metadata:
+      labels:
+        app: cs2304-rbac
+    spec:
+      serviceAccountName: cs2304-rbca
+      containers:
+        - name: app
+          image: mikesir87/cs2304-k8s:rbac
