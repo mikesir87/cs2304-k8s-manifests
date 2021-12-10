@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cs2304-verifier
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: verifier
+  namespace: cs2304-verifier
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: verifier
+  namespace: cs2304-verifier
+spec:
+  serviceAccountName: verifier
+  containers:
+  - name: verifier
+    image: mikesir87/cs2304-verifier:final
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 3000
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cs2304-verifier
+subjects:
+- kind: ServiceAccount
+  name: verifier
+  namespace: cs2304-verifier
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io
