@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: cs2304-final-failing-app
+  name: cs2304-final-missing-endpoints
 ---
 apiVersion: v1
 kind: Pod
 metadata:
   name: app
-  namespace: cs2304-final-failing-app
+  namespace: cs2304-final-missing-endpoints
   labels:
     app: nginx-app
 spec:
@@ -23,7 +23,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: app
-  namespace: cs2304-final-failing-app
+  namespace: cs2304-final-missing-endpoints
 spec:
   selector:
     app: nginx
