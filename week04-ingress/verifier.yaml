@@ -33,8 +33,25 @@ kind: Service
 metadata:
   name: ingress-verifier
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: ingress-verifier
   ports:
     - port: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-verifier
+spec:
+  rules:
+    - host: verifier.local.mikesir87.training
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ingress-verifier
+                port:
+                  number: 3000
