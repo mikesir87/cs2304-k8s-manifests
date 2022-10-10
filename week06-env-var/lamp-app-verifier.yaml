@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lamp-app-verifier
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lamp-app-verifier
+  labels:
+    app: lamp-app-verifier
+spec:
+  serviceAccountName: lamp-app-verifier
+  containers:
+    - name: verifier
+      image: mikesir87/cs2304-verifier:lamp-app-setup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-reader
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: lamp-app-verifier-secrets
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-reader
+subjects:
+  - kind: ServiceAccount
+    name: lamp-app-verifier
+    namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: lamp-app-verifier
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - kind: ServiceAccount
+    name: lamp-app-verifier
+    namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lamp-app-verifier
+spec:
+  type: ClusterIP
+  selector:
+    app: lamp-app-verifier
+  ports:
+    - port: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-verifier
+spec:
+  rules:
+    - host: lamp-app-verifier.local.mikesir87.training
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lamp-app-verifier
+                port:
+                  number: 3000
